@@ -6557,6 +6557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cropTilesParent: {fileID: 1065400073}
+  cropData: {fileID: 11400000, guid: 1a406cab2c29c407e99e25fbf4dfd5f1, type: 2}
 --- !u!1 &1822213109
 GameObject:
   m_ObjectHideFlags: 0

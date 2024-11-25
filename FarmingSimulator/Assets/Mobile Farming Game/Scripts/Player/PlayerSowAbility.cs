@@ -17,17 +17,15 @@ namespace Mobile_Farming_Game.Scripts.Player
         {
             _playerAnimator = GetComponent<PlayerAnimator>();
             SeedParticles.OnParticleCollisionAction += SeedsCollidedCallback;
+            CropField.OnFieldFullySown += OnFieldFullySownCallback;
         }
 
         private void OnDestroy()
         {
             SeedParticles.OnParticleCollisionAction -= SeedsCollidedCallback;
+            CropField.OnFieldFullySown -= OnFieldFullySownCallback;
         }
-
-        private void Update()
-        {
-            
-        }
+        
 
         private void SeedsCollidedCallback(Vector3[] seedsPositions)
         {
@@ -35,12 +33,23 @@ namespace Mobile_Farming_Game.Scripts.Player
             _currentCropField.SeedsCollidedCallback(seedsPositions);
         }
 
+        private void OnFieldFullySownCallback(CropField obj)
+        {
+            if (obj == _currentCropField)
+                _playerAnimator.StopSowAnimation();
+        }
+
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("CropField"))
+            if (other.CompareTag("CropField") && other.GetComponent<CropField>().IsEmpty())
             {
                 _currentCropField = other.GetComponent<CropField>();
                 _playerAnimator.PlaySowAnimation();
+            }
+            else
+            {
+                _currentCropField = other.GetComponent<CropField>();
+                _playerAnimator.StopSowAnimation();
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Mobile_Farming_Game.Scripts.Data;
 using Mobile_Farming_Game.Scripts.Player;
 using UnityEngine;
 
@@ -11,15 +12,19 @@ namespace Mobile_Farming_Game.Scripts.Tiles
         [Header("----- ELEMENTS ------")]
         [SerializeField] private Transform cropTilesParent;
         private readonly List<CropTile> _cropTiles = new List<CropTile>();
+        
+        [Header("----- SETTINGS ------")]
+        [SerializeField] private CropData cropData;
+        private CropTileState _cropFieldState;
+        private int _tilesSown = 0;
+        
+        [Header("----- ACTIONS ------")]
+        public static Action<CropField> OnFieldFullySown;
 
         private void Start()
         {
+            _cropFieldState = CropTileState.Empty;
             StoreCropTiles();
-        }
-
-        private void Update()
-        {
-            
         }
 
         private void StoreCropTiles()
@@ -44,7 +49,19 @@ namespace Mobile_Farming_Game.Scripts.Tiles
 
         private void SowSeed(CropTile cropTile)
         {
-            cropTile.SowSeed();
+            cropTile.SowSeed(cropData);
+            _tilesSown++;
+            
+            if (_tilesSown == _cropTiles.Count)
+                FieldFullySown();
+            
+        }
+
+        private void FieldFullySown()
+        {
+            _cropFieldState = CropTileState.Sown;
+            OnFieldFullySown?.Invoke(this);
+            Debug.Log("Field fully sown");
         }
 
         private CropTile GetClosestCropTile(Vector3 seedsPosition)
@@ -67,6 +84,11 @@ namespace Mobile_Farming_Game.Scripts.Tiles
             if (closestCropTileIndex == -1) return null;
             
             return _cropTiles[closestCropTileIndex];
+        }
+        
+         public bool IsEmpty()
+        {
+            return _cropFieldState == CropTileState.Empty;
         }
     }
 }

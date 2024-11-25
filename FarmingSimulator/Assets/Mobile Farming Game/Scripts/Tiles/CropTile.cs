@@ -1,30 +1,39 @@
 using System;
+using Mobile_Farming_Game.Scripts.Data;
 using UnityEngine;
 
 namespace Mobile_Farming_Game.Scripts.Tiles
 {
+    public enum CropTileState
+    {
+        Empty, 
+        Sown, 
+        Watered
+    }
+    
     public class CropTile : MonoBehaviour
     {
-        private enum State { Empty, Sown, Watered }
-        private State _currentState;
+        private CropTileState _currentCropTileState;
+        
+        [Header("----- Elements ------")]
+        [SerializeField] private Transform cropParent;
+        
 
         private void Start()
         {
-            _currentState = State.Empty;
+            _currentCropTileState = CropTileState.Empty;
         }
 
         public bool IsEmpty()
         {
-            return _currentState == State.Empty;
+            return _currentCropTileState == CropTileState.Empty;
         }
 
-        public void SowSeed()
+        public void SowSeed(CropData cropData)
         {
-            _currentState = State.Sown;
+            _currentCropTileState = CropTileState.Sown;
             
-            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            go.transform.position = transform.position;
-            go.transform.localScale = Vector3.one * 0.5f;
+            Crop crop = Instantiate(cropData.cropPrefab, transform.position,Quaternion.identity, cropParent);
         }
     }
 }

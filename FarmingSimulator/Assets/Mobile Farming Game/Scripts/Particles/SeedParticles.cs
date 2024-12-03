@@ -13,11 +13,11 @@ public class SeedParticles : MonoBehaviour
     {
         ParticleSystem ps = GetComponent<ParticleSystem>();
         
-        List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
-        int collisionAmount = ps.GetCollisionEvents(other, collisionEvents);
+        var collisionEvents = new List<ParticleCollisionEvent>();
+        var collisionAmount = ps.GetCollisionEvents(other, collisionEvents);
         
         Vector3[] collisionPositions = new Vector3[collisionAmount];
-        for (int i = 0; i < collisionAmount; i++)
+        for (var i = 0; i < collisionAmount; i++)
             collisionPositions[i] = collisionEvents[i].intersection;
         
         OnParticleCollisionAction?.Invoke(collisionPositions);
